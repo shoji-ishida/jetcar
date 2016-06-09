@@ -1,0 +1,11 @@
+<loader>
+<script>
+	<file>js/glMatrix-0.9.5.min.js</file>
+	<file>js/webgl-utils.js</file>
+	<file>js/matrixengine-core.js</file>
+	<file>js/matrixengine-webgl.js</file>
+	<file>js/matrixengine-contents.js</file>
+	<file>js/matrixengine-controller-skeleton.js</file>
+</script>
+<bootstrap>startMatrixEngine()</bootstrap>
+</loader>
