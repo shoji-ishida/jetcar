@@ -6,6 +6,7 @@
 	<file>js/matrixengine-webgl.js</file>
 	<file>js/matrixengine-contents.js</file>
 	<file>js/matrixengine-controller-skeleton.js</file>
+	<file>js/boot.js</file>
 </script>
 <bootstrap>startMatrixEngine()</bootstrap>
 </loader>

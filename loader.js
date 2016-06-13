@@ -6,6 +6,7 @@ var Loader = function(zipURL, callback) {
     var manifest = null;
     var xmlDom = null;
     var scripts = [];
+    var htmls = [];
     
     zip.createReader(new zip.HttpReader(zipURL), function(reader) {
         zipReader = reader; 
@@ -18,15 +19,50 @@ var Loader = function(zipURL, callback) {
     function processManifest() {
     	manifest = getEntry("manifest");
     	if (manifest) {
+    		console.log("Process manifest");
     		manifest.getData(new zip.TextWriter(), function(xml) {
         		var parser = new DOMParser();
        			xmlDom = parser.parseFromString(xml, 'text/xml');
-       			loadScripts();
+       			if(xmlDom.getElementsByTagName("parsererror").length){
+       				xmlDom = null;
+       				return;
+       			}
+       			loadHTMLs();
     		});
     	} else {
+    		console.log("Can't find manifest");
     		if (loaderCallback) loaderCallback();
     	}
     }
+    
+    // This only works for Safari & Chrome.
+    // Do not use <html> tab in manifest yet.
+    function loadHTMLs() {
+    	console.log("Process HTML");
+    	var html = xmlDom.querySelector("html > file");
+    	while (html) {
+    		htmls.push(html.childNodes[0].nodeValue);
+   	        html = html.nextElementSibling;
+    	}
+    	if (htmls.length != 0) {
+    		loadHTML();
+    	} else {
+    		loadScripts();
+    	}
+    }
+    
+    function loadHTML() {
+    	loader.loadHTML(htmls[0], htmlLoaded);
+    }
+    
+    function htmlLoaded() {
+    	htmls.shift();
+    	if (scripts.length == 0) {
+    		loadScripts();
+    	} else {
+    		loadHTML();
+    	}
+    };
     
     function loadScripts() {
    		var script = xmlDom.querySelector("script > file");
@@ -36,8 +72,12 @@ var Loader = function(zipURL, callback) {
    			scripts.push(script.childNodes[0].nodeValue);
    	        script = script.nextElementSibling;
         }
-   		loadScript();
-    }
+   		if (scripts.length != 0) {
+   			loadScript();
+   		} else {
+   			bootstrap();
+   		}
+    };
     
     function loadScript() {
     	loader.loadScript(scripts[0], scriptsLoaded);
@@ -54,9 +94,9 @@ var Loader = function(zipURL, callback) {
     };
     
     function bootstrap() {
-    	var bootstrap = xmlDom.querySelector("loader > bootstrap").childNodes[0].nodeValue;
+    	var bootstrap = xmlDom.querySelector("loader > bootstrap");
     	if (bootstrap) {
-    		eval(bootstrap);
+    		eval(bootstrap.childNodes[0].nodeValue);
     	}
     	if (loaderCallback) loaderCallback();
     }
@@ -92,6 +132,17 @@ var Loader = function(zipURL, callback) {
                 zipReader = null;
             });
             zipEntries = null;
+        },
+        loadHTML : function(url, callback) {
+        	console.log("loadHTML: "+url);
+        	var html = getEntry(url);
+        	if (html) {
+        		html.getData(new zip.TextWriter(), function(data) {
+        			console.log(data);
+        			document.write(data);
+        			if (callback) callback();
+        		});
+        	}
         },
     	loadImage : function(url, callback) {
     		var entry = getEntry(url);
@@ -132,6 +183,8 @@ var Loader = function(zipURL, callback) {
             }
         },
         loadScript : function(url, callback, encoding) {
+        	console.log("loadScript: "+url);
+
         	var entry = getEntry(url);
 
             if (entry) {

@@ -1,87 +1,19 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+
 <head>
-    <title></title>
-    <script type="text/javascript" src="zip.js"></script>
-    <script type="text/javascript" src="zip-ext.js"></script>
-    <script type="text/javascript" src="loader.js"></script>
-    <script type="text/javascript">
+<title>JetCar</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1" />
 
-    var loader = new Loader('files.dat', done);
-    
-    /*
-    var scripts = [
-        'js/glMatrix-0.9.5.min.js',
-        'js/webgl-utils.js',
-        'js/matrixengine-core.js',
-        'js/matrixengine-webgl.js',
-        'js/matrixengine-contents.js',
-        'js/matrixengine-controller-skeleton.js'
-	];
-    */
-    
-    function done() {
-    	//startMatrixEngine();
-    }
-    
-    /*
-    function loadScripts() {
-    	//console.log("Loading = " + scripts[0]);
-    	loader.loadScript(scripts[0], scriptsLoaded);
-    };
+<script type="text/javascript" src="zip.js"></script>
+<script type="text/javascript" src="zip-ext.js"></script>
+<script type="text/javascript" src="loader.js"></script>
+<script type="text/javascript">
+var loader = new Loader('files.dat');
+</script>
+</head>
 
-    function scriptsLoaded() {
-    	//console.log("Loaded = " + scripts[0]);
-    	scripts.shift();
-    	if (scripts.length == 0) {
-    		startMatrixEngine();
-            //loader.close(); Can not close loader as Texture images are lazily loaded.
-    	} else {
-    		loadScripts();
-    	}
-    };
-    */
-    
-	function expandCanvas(canvas) {
-		var bodyWidth = Math.max(document.documentElement.clientWidth || document.body.clientWidth || document.body.scrollWidth, 64);
-		var bodyHeight = Math.max(document.documentElement.clientHeight || document.body.clientHeight || document.body.scrollHeight, 64);
-		var zoomer = window.devicePixelRatio;
-		if(zoomer == undefined){
-			if("MxeUtil" in window && MxeUtil.detectSmartPhone()){
-				zoomer = window.screen.width/bodyWidth;
-			}else{
-				zoomer = 1.0;
-			}
-		}
-
-		canvas.width=1280;
-		canvas.height=720;
-		canvas.style.width = bodyWidth+"px";
-		canvas.style.height = bodyHeight+"px";
-	};
-
-	function startMatrixEngine() {
-		var canvas = document.getElementById("matrixengine-canvas");
-		expandCanvas(canvas); //full screen
-		matrixEngine = createMxePlayerWGL(canvas);
-		var mxeProject = createMxeProjectWGL();
-
-		mxeProject.contentsClass = MxeDefaultContents;
-		mxeProject.controllerClass = MxeDefaultController;
-		matrixEngine.setProject(mxeProject);
-		matrixEngine.start();
-	};
-
-	window.onresize = function() {
-		var canvas = document.getElementById("matrixengine-canvas");
-		expandCanvas(canvas);
-	};
-
-
-	</script>
-	</head>
-
-	<body width="100%" height="100%" style="position:relative; margin:0px; padding:0px; overflow-x:hidden; overflow-y:hidden;">
-		<canvas id="matrixengine-canvas" style="border: none;"></canvas>
-	</body>
+<body width="100%" height="100%" style="position:relative; margin:0px; padding:0px; overflow-x:hidden; overflow-y:hidden;">
+	<canvas id="matrixengine-canvas" style="border: none;"></canvas>
+</body>
 </html>
